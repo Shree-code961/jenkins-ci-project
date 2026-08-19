@@ -16,7 +16,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying the application...'
+                sh 'cp index.html /var/www/html/index.html'
+                echo 'HTML application deployed to Apache!'
             }
         }
     }
