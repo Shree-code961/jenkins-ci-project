@@ -38,5 +38,22 @@ pipeline {
                 echo 'Docker image pushed successfully!'
             }
         }
+        stage('Deploy') {
+    steps {
+        echo 'Deploying Docker container...'
+
+        sh '''
+            docker pull shreedevihalli/docker-ci-project:v2
+
+            docker stop docker-ci-container || true
+            docker rm docker-ci-container || true
+
+            docker run -d \
+                --name docker-ci-container \
+                -p 8081:80 \
+                shreedevihalli/docker-ci-project:v2
+        '''
+    }
+}
     }
 }
