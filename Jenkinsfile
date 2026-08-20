@@ -19,14 +19,23 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                sh 'docker push shreedevihalli/docker-ci-project:v2'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker push shreedevihalli/docker-ci-project:v2
+                        docker logout
+                    '''
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying Docker container...'
+                echo 'Docker image pushed successfully!'
             }
         }
     }
